@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mTopToolbar;
     DatabaseReference db;
     FirebaseHelper helper;
-    ArrayAdapter<String> adapter;
+    CustomAdapter adapter;
 
     ArrayList<String> festStr = new ArrayList<>();
 
@@ -102,9 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
 //                    Log.d("SHOWARRAY",helper.retrieve().toString());
 
-                    adapter=new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item,R.id.textView,helper.retrieve());
-
+//                    adapter=new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item,R.id.textView,helper.retrieve());
+                    adapter = new CustomAdapter(getApplicationContext(),helper.retrieve());
                     listMsg.setAdapter(adapter);
+
+
                 }
 
                 @Override
@@ -116,16 +120,88 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
             listMsg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                     // TODO Auto-generated method stub
 
                     /* appending Happy with festival name */
-                    String value = "Happy " + adapter.getItem(position);
+                    final AlertMessages am= (AlertMessages) adapter.getItem(position);
+
+                    final String value = "Id: " + am.getKey();
+                    String ack = am.getAcknowledge();
+
+                    if (ack.equals("false")){
+
+//                        Toast.makeText(getApplicationContext(), ack, Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                        alertDialogBuilder.setMessage("Are you sure " +
+                                "for acknowledge?");
+                        alertDialogBuilder.setPositiveButton("yes",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        Toast.makeText(getApplicationContext(),"You clicked yes " +
+                                                value,Toast.LENGTH_LONG).show();
+
+                                        helper.update(am.getKey());
+
+
+                                    }
+                                });
+
+                        alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                    finish();
+                            }
+                        });
+
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+                    }
+
+//                    adapter.notifyDataSetChanged();
+
+
                     /* Display the Toast */
-                    Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            listMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+//                    View rview = adapterView.getChildAt(i);
+//                    TextView selectedItem = (TextView) adapterView.getItemAtPosition(i);
+
+                    final AlertMessages am= (AlertMessages) adapter.getItem(i);
+
+                    String value = "Id: " + am.getKey();
+                    String ack = am.getAcknowledge();
+
+
+
+
+                    TextView acknowledgeBy= (TextView) view.findViewById(R.id.tvAckBy);
+
+                    if(ack.equals("true")) {
+                        if (acknowledgeBy.getVisibility() == View.GONE) {
+                            //expandedChildList.set(arg2, true);
+                            acknowledgeBy.setVisibility(View.VISIBLE);
+                        } else {
+                            //expandedChildList.set(arg2, false);
+                            acknowledgeBy.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Not Yet Acknowledge!", Toast.LENGTH_SHORT).show();
+                    }
+//                    adapter.notifyDataSetChanged();
+                    return true;
                 }
             });
 

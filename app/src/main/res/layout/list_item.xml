@@ -3,11 +3,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="5dp"
+    android:paddingRight="5dp"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvAlarmName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
@@ -20,8 +22,8 @@
         android:gravity="center|left"/>
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvDateTime"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
@@ -31,7 +33,23 @@
         android:text="03-08-18 11:11:03"
         android:textSize="15sp"
         android:layout_weight="1"
-        android:gravity="center|top"/>
+        android:gravity="center|top|left"/>
+
+    <TextView
+
+        android:id="@+id/tvAckBy"
+        android:background="@drawable/rounded_corner"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:padding="4dp"
+        android:textColor="#000000"
+        android:text="03-08-18 11:11:03"
+        android:textSize="10sp"
+        android:layout_weight="1"
+        android:gravity="center|top|left"/>
 
     <!--<Button-->
         <!--android:id="@+id/button2"-->

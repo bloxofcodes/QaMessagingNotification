@@ -15,7 +15,7 @@ public class FirebaseHelper {
 
     DatabaseReference db;
     Boolean saved=null;
-    ArrayList<String> alertmsg = new ArrayList<>();
+    ArrayList<AlertMessages> alertmsg = new ArrayList<>();
 
     public FirebaseHelper(DatabaseReference db) {
         this.db = db;
@@ -44,22 +44,51 @@ public class FirebaseHelper {
         return saved;
     }
 
+    //UPDATE
+    public Boolean update(String id)
+    {
+        if(alertmsg==null)
+        {
+            saved=false;
+        }else
+        {
+            try
+            {
+                db.child("alarm-items/"+id+"/"+"acknowledge").setValue("true");
+                db.child("alarm-items/"+id+"/"+"userName").setValue("Jayvee");
+                saved=true;
+
+            }catch (DatabaseException e)
+            {
+                e.printStackTrace();
+                saved=false;
+            }
+        }
+
+        return saved;
+    }
+
     private void fetchData(DataSnapshot dataSnapshot)
     {
         alertmsg.clear();
 
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
+
+            AlertMessages alertMessages = ds.getValue(AlertMessages.class);
+            alertMessages.setKey(ds.getKey());
+            alertmsg.add(alertMessages);
+
             Log.d("DATASHIT",ds.toString());
-            String alarmName=ds.getValue(AlertMessages.class).getAlarmName();
-            Log.d("ACKNOWLEDGE",alarmName);
-            alertmsg.add(alarmName);
-            Log.d("LISTALERTS",alertmsg.toString());
+//            String alarmName=ds.getValue(AlertMessages.class).getAlarmName();
+//            Log.d("ACKNOWLEDGE",alarmName);
+//            alertmsg.add(alarmName);
+//            Log.d("LISTALERTS",alertmsg.toString());
         }
     }
 
     //READ
-    public ArrayList<String> retrieve()
+    public ArrayList<AlertMessages> retrieve()
     {
 
 //
